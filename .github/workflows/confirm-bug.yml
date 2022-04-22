@@ -1,0 +1,39 @@
+name: "Confirm bug"
+
+on: issue_comment
+
+jobs:
+  check_comments:
+    name: Confirm issue - Command
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for Command
+        uses: xt0rted/slash-command-action@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          command: confirmed
+          reaction: "true"
+          reaction-type: "eyes"
+          allow-edits: "false"
+          permission-level: none
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Handle command - Label
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.removeLabel({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              name: ['(S1 - Need Confirmation)']
+            })
+
+            github.rest.issues.addLabels({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: ['(S2 - Confirmed)']
+            })
