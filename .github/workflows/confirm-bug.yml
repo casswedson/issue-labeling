@@ -21,6 +21,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Post sender info
+        run: |
+          echo "Comment on PR #${{ github.event.issue.number }} by ${{ github.event.issue.user.login }}, ${{ github.event.comment.author_association }}"
+
       - name: Handle command - Label
         uses: actions/github-script@v6
         with:
