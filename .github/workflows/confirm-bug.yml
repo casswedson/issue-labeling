@@ -26,17 +26,22 @@ jobs:
           echo "Comment on PR #${{ github.event.issue.number }} by ${{ github.event.issue.user.login }}, ${{ github.event.comment.author_association }}"
 
       - name: Handle command - Label
+        # You can't confirm your own bug report
         if: ${{github.event.issue.user.login}} != ${{github.event.comment.author.login}}
         uses: actions/github-script@v6
         with:
           script: |
-            github.rest.issues.removeLabel({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              name: ['(S1 - Need Confirmation)']
-            })
-
+            try {
+              github.rest.issues.removeLabel({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: ['(S1 - Need Confirmation)']
+              })
+            }
+            catch(err){
+              console.log('Need Confirmation label not found - continuing.')
+            }
             github.rest.issues.addLabels({
               issue_number: context.issue.number,
               owner: context.repo.owner,
