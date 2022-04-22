@@ -5,6 +5,7 @@ on: issue_comment
 jobs:
   check_comments:
     name: Confirm issue - Command
+    if: startsWith(github.event.comment.body, '/confirmed')
     runs-on: ubuntu-latest
     steps:
       - name: Check for Command
