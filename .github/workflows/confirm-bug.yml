@@ -24,7 +24,7 @@ jobs:
 
       - name: Post sender info
         run: |
-          echo "Comment on PR #${{ github.event.issue.number }} by ${{ github.event.issue.user.login }}, ${{ github.event.comment.author_association }}"
+          echo "Comment on PR #${{ github.event.issue.number }} by ${{ github.event.issue.user.login }}, ${{ github.event.comment.author_association }} Github actor ${{ github.actor }}"
 
       - name: Handle command - Label
         if: ${{github.event.comment.user.login}} != ${{github.event.issue.user.login}}
