@@ -7,4 +7,4 @@ labels:
 
   - label: "<Suggestion / Discussion>"
     matcher:
-      body: "(\\s|^)### Is your feature related to a problem\\s*(\n|$)"
+      body: "(\\s|^)### Is your feature request related to a problem.*\\s*(\n|$)"
