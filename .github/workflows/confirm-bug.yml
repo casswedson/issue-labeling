@@ -6,7 +6,7 @@ jobs:
   check_comments:
     name: Confirm issue - Command
     # You can't confirm your own bug report
-    if: startsWith(github.event.comment.body, '/confirmed') && ${{github.event.issue.user.login}} == ${{github.event.comment.user.login}}
+    if: startsWith(github.event.comment.body, '/confirmed')
     runs-on: ubuntu-latest
     steps:
       - name: Check for Command
@@ -27,6 +27,7 @@ jobs:
           echo "Comment on PR #${{ github.event.issue.number }} by ${{ github.event.issue.user.login }}, ${{ github.event.comment.author_association }}"
 
       - name: Handle command - Label
+        if: ${{github.event.comment.user.login}} != ${{github.event.issue.user.login}}
         uses: actions/github-script@v6
         with:
           script: |
