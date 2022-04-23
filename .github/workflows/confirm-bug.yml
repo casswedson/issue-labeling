@@ -33,7 +33,7 @@ jobs:
                 name: ['(S1 - Need Confirmation)']
               });
             }
-            catch() {
+            catch {
               console.log('Need Confirmation label not found - continuing.');
             }
             finally {
