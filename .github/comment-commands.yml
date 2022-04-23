@@ -1,0 +1,13 @@
+# https://github.com/rytswd/comvent
+trigger: specific
+
+# list of users allowed to mark bug reports as confirmed
+# TODO add more people
+users:
+  active:
+    - casswedson
+    - Maleclypse
+
+keywords:
+  - name: confirm-bug
+    value: '^\/confirmed$' # Regex which looks for a comment with '/confirmed'
