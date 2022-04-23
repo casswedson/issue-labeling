@@ -1,17 +1,18 @@
-name: "Confirm bug"
+name: "Comment Commands"
 
 on:
- issue_comment:
-  types:
-    - created
+  issue_comment:
+    types:
+      - created
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  ISSUE_NUMBER: ${{ github.event.issue.number }}
 
 jobs:
-  check_comments:
+  confirm-bug:
     name: Confirm bug - Comment command
     runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      ISSUE_NUMBER: ${{ github.event.issue.number }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
