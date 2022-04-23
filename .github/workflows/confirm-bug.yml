@@ -10,6 +10,7 @@ jobs:
     name: Confirm bug - Comment command
     runs-on: ubuntu-latest
     env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       ISSUE_NUMBER: ${{ github.event.issue.number }}
     steps:
       - name: Checkout
