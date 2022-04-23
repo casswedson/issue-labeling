@@ -9,7 +9,12 @@ jobs:
   check_comments:
     name: Confirm bug - Comment command
     runs-on: ubuntu-latest
+    env:
+      ISSUE_NUMBER: ${{ github.event.issue.number }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
       - name: Set-up Comvent
         uses: rytswd/comvent@v0.3
         id: comvent
@@ -17,30 +22,8 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           config-path: .github/comment-commands.yml
 
-      - name: Checkout
-        uses: actions/checkout@v3
-
       - if: steps.comvent.outputs.confirm-bug != ''
         name: Handle confirmed command - Label
-        uses: actions/github-script@v6
-        with:
-          script: |
-            try {
-              github.rest.issues.removeLabel({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                name: ['(S1 - Need Confirmation)']
-              });
-            }
-            catch {
-              console.log('Need Confirmation label not found - continuing.');
-            }
-            finally {
-              github.rest.issues.addLabels({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                labels: ['(S2 - Confirmed)']
-              });
-            }
+        run: |
+          gh issue edit "$ISSUE_NUMBER" --remove-label "(S1 - Need Confirmation)"
+          gh issue edit "$ISSUE_NUMBER" --add-label "(S2 - Confirmed)"
