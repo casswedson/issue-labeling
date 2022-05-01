@@ -4,7 +4,6 @@ on:
   issue_comment:
     types:
       - created
-
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   ISSUE_NUMBER: ${{ github.event.issue.number }}
