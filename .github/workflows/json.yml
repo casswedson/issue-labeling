@@ -5,17 +5,25 @@ on:
     paths:
     - '.github/workflows/**'
 
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  PR_NUMBER: ${{ github.event.pull_request.number }}
+
 jobs:
   style-json:
     name: JSON style check
 
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         fetch-depth: 1
     - name: JSON style check
       run: echo "json style ran"
     - name: Display Corrections
       if: failure()
-      run: git diff
+      run: |
+        git diff
+        gh pr edit "$PR_NUMBER" --remove-label "json-styled"
+    - name: label
+      run: gh pr edit "$PR_NUMBER" --add-label "json-styled"
