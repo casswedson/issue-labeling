@@ -28,11 +28,17 @@ jobs:
 
             for (const issue of issues) {
               if (issue.number === context.issue.number) {
-                github.rest.issues.addLabels({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: context.issue.number,
-                  labels: [labelToAdd],
-                });
+                continue
+              }
+
+              if (issue.pull_request) {
+                return // Creator is already a contributor.
               }
             }
+
+            github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: [labelToAdd],
+            });
