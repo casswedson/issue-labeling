@@ -8,37 +8,9 @@ on:
 jobs:
   triage:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Add 'new contributor' label
-        uses: actions/github-script@v6.3.3
+      - uses: actions/checkout@v4
+      - uses: Code-Hex/first-label-interaction@v1.0.1
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            // Get a list of all issues created by the PR opener
-            const creator = context.payload.sender.login
-            const opts = github.rest.issues.listForRepo.endpoint.merge({
-              ...context.issue,
-              creator,
-              state: 'all'
-            })
-
-            const labelToAdd = 'new contributor';
-            const issues = await github.paginate(opts)
-
-            for (const issue of issues) {
-              if (issue.number === context.issue.number) {
-                continue
-              }
-
-              if (issue.pull_request) {
-                return // Creator is already a contributor.
-              }
-            }
-
-            github.rest.issues.addLabels({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              labels: [labelToAdd],
-            });
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+          pr-labels: '["new contributor"]'
