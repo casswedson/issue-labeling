@@ -9,7 +9,7 @@ jobs:
   triage:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
       - uses: Code-Hex/first-label-interaction@v1.0.1
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
