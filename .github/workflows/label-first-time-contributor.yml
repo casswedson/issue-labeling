@@ -5,12 +5,27 @@ on:
     types:
       - opened
 
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  ISSUE_NUMBER: ${{ github.event.issue.number }}
+
 jobs:
   triage:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: Code-Hex/first-label-interaction@v1.0.1
-        with:
-          github-token: "${{ secrets.GITHUB_TOKEN }}"
-          pr-labels: '["new contributor"]'
+
+      - name: Check if user is a new contributor
+        id: new-contributor
+        run: |
+          author=$(jq -r '.pull_request.user.login' $GITHUB_EVENT_PATH)
+            echo $author
+          merged_prs=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/search/issues?q=is:pr+author:$author+is:merged")
+          pr_count=$(echo "$merged_prs" | jq '.total_count')
+            echo $pr_count
+          echo "pr_count=$pr_count" >> $GITHUB_OUTPUT
+
+      - name: Label new contributors
+        if: steps.new-contributor.outputs.pr_count == 0
+        run: |
+          gh issue edit "$ISSUE_NUMBER" --add-label "new contributor"
