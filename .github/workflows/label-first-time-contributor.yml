@@ -1,4 +1,4 @@
-name: Label First-Time Contributor PRs
+name: Sort new contributors for test approval
 
 on:
   pull_request_target:
@@ -15,17 +15,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Check if user is a new contributor
-        id: new-contributor
+      - name: Check if user has any merged PRs in this reposiory
+        id: pr-check
         run: |
           author=$(jq -r '.pull_request.user.login' $GITHUB_EVENT_PATH)
-            echo $author
-          merged_prs=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/search/issues?q=is:pr+author:$author+is:merged")
-          pr_count=$(echo "$merged_prs" | jq '.total_count')
-            echo $pr_count
+          pr_count=$(gh pr list --state merged --author $author --json number | jq 'length')
+
+          echo "Debug: $author with $pr_count merged PRs."
           echo "pr_count=$pr_count" >> $GITHUB_OUTPUT
 
-      - name: Label new contributors
-        if: steps.new-contributor.outputs.pr_count == 0
+      - name: Label contributors with no merged PRs
+        if: steps.pr-check.outputs.pr_count == 0
         run: |
           gh issue edit "$ISSUE_NUMBER" --add-label "new contributor"
