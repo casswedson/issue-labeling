@@ -20,7 +20,7 @@ jobs:
         run: |
           author=$(jq -r '.pull_request.user.login' $GITHUB_EVENT_PATH)
             echo $author
-          merged_prs=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/search/issues?q=is:pr+author:$author+is:merged")
+          merged_prs=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/search/issues?q=is:pr+is:merged+author:$author+repo:$GITHUB_REPOSITORY")
           pr_count=$(echo "$merged_prs" | jq '.total_count')
             echo $pr_count
           echo "pr_count=$pr_count" >> $GITHUB_OUTPUT
