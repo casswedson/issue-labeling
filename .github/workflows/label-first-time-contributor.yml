@@ -27,4 +27,4 @@ jobs:
       - name: Label contributors with no merged PRs
         if: steps.pr-check.outputs.pr_count == 1
         run: |
-          gh pr edit "$ISSUE_NUMBER" --add-label "new contributor"
+          gh pr edit "$PR_NUMBER" --add-label "new contributor"
