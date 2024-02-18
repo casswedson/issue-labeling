@@ -12,16 +12,20 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const title = context.payload.issue.title.toLowerCase();
+            const title = context.payload.issue.title;
+            const titleSplit = title.split(/\b/).map(e => e.toLowerCase());
             const keywords = ['api', 'treesitter', 'ui', 'lsp'];
-
-            const match = keywords.filter(keyword => title.includes(keyword));
-
-            if (match.length !== 0) {
-              github.rest.issues.addLabels({
+            var match = new Set();
+            for (const keyword of keywords) {
+              if (titleSplit.includes(keyword)) {
+                match.add(keyword);
+              }
+            }
+            if (match.size !== 0) {
+              await github.rest.issues.addLabels({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                issue_number: context.issue.number,
-                labels: match
+                issue_number: context.payload.issue.number,
+                labels: Array.from(match)
               });
             }
